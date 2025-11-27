@@ -14,9 +14,17 @@ Developed an enhanced multi-task learning model based on the PLE framework to ad
 *(To be added)*
 
 ## **3. Requirements**
-*(To be added)*
+- **numpy**
+- **torch**
+- **pandas**
+- **scikit-learn**
 
-## **4. Results**
+## **4. Datasets**
+| Name | Instances | Features | Labels | link |
+|----------|----------|----------|----------|----------|
+| census-income   | 299285  | 42  | 2  |https://archive.ics.uci.edu/dataset/117/census+income+kdd|
+## **5. Results**
+### **census-income**
 | Models | Task1AUC | Task2AUC |
 |----------|----------|----------|
 | MMOE   | 0.938   | 0.979   |
