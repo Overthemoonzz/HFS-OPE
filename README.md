@@ -41,7 +41,8 @@ python main.py \
 
 | Name | users | items | interactions | Features | link |
 |----------|----------|----------|----------|----------|----------|
-| TenRec   | 1M  | 1,948,388  | 86,642,580  |5 + User's last 10 interactions|https://tenrec0.github.io/|
+| TenRec   | 1M  | 1,948,388  | 86,642,580  |3(user) + 2(item) + User's last 10 interactions|https://tenrec0.github.io/|
+| Kuairand-Pure   | 27,285  | 7,583  | 1,186,059  |30(user) + 62(item)|https://kuairand.com/|
 
 ## **6. Results**
 ### **census-income**
