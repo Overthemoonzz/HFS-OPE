@@ -11,7 +11,7 @@ Developed an enhanced multi-task learning model based on the PLE framework to ad
 - **Hybrid-granularity Feature Selection**: Used PLE-based offline feature importance to identify task-relevant features, and introduced a FeatureGate module to apply dimension-wise soft masking on task-specific embeddings.
 
 ## **2. Model Architecture**
-<img src="HFSOPE.png" alt="HFS-OPE" width="320" height="240" />
+<img src="assets/HFSOPE.png" alt="HFS-OPE" width="320" height="240" />
 
 ## **3. Requirements**
 - **numpy**
