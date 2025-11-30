@@ -42,7 +42,7 @@ python main.py \
 | Kuairand-Pure   | 27,285  | 7,583  | 1,186,059  |30(user) + 62(item)|https://kuairand.com/|
 | TenRec   | 1M  | 1,948,388  | 86,642,580  |3(user) + 2(item) + User's last 10 interactions|https://tenrec0.github.io/|
 
-Note: Kuairand-Pure only user 10(user) + 8(item) features
+Note: Kuairand-Pure only use 10(user) + 8(item) features
 
 ## **6. Results**
 | Dataset | Metric | ESMM | MMOE | PLE | ours |
