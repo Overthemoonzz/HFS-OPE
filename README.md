@@ -19,7 +19,7 @@ Developed an enhanced multi-task learning model based on the PLE framework to ad
 - **pandas**
 - **scikit-learn**
 
-## **4. Getting start**
+## **4. Getting started**
 ```
 python main.py \
 --task_name=census_income \
