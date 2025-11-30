@@ -48,7 +48,7 @@ Note: Kuairand-Pure only use 10(user) + 8(item) features
 | Dataset | Metric | ESMM | MMOE | PLE | ours |
 |---------|--------|------|------|-----|------|
 | census-income | Task1-AUC<br>Task2-AUC | 0.986<br>0.911 | 0.979<br>0.938 | 0.982<br>0.935 | **0.995<br>0.947** |
-| Kuairand-Pure | Click-AUC<br>Like-AUC | 0.601<br>0.839 | **0.744**<br>0.834 | 0.691<br>0.795 | 0.739<br>**0.866** |
+| Kuairand-Pure | Click-AUC<br>Like-AUC | 0.601<br>0.839 | 0.744<br>0.834 | 0.691<br>0.795 | **0.752**<br>**0.866** |
 | TenRec | Click-AUC<br>Like-AUC | 0.559<br>0.922 | -<br>- | -<br>- | **-<br>-** |
 
 (The remaining experimental results will be released soon.)
