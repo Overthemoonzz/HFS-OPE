@@ -1,17 +1,21 @@
-# **HFS-OPE (Hybrid Feature Selection Optimized Private Expert Model)**
+# **KuaiRand-MultiTask-Ranking**
 
 ## **1. Introduction**
 
-Developed an enhanced multi-task learning model based on the PLE framework to address negative transfer and improve task-specific representation quality.
+Multi-task learning plays a crucial role in modern recommender systems, especially in short-video platforms where user behavior is diverse and sparse across different interaction types. The KuaiRand dataset provides large-scale logs from Kuaishou’s single-column and double-column recommendation scenarios, containing one month of user interactions such as click, like, comment, follow, and long-view.
+
+Building on this dataset, we develop a multi-task learning framework to jointly model key user behavior probabilities (e.g., pCTR, pVTR). To overcome the limitations of traditional manual fusion rules used in industry, we further introduce learning-based ensemble methods to adaptively fuse multi-task predictions. By leveraging user-specific and task-specific representations, our approach learns personalized fusion weights, significantly enhancing ranking effectiveness in the fine-ranking stage.
 
 ### **Key Features**
 
-- **Independent Embeddings**: Constructed task-specific and shared embeddings for each feature, providing sufficient parameter space to capture task-level personalized patterns.
+- **Imbalanced Multi-Behavior Modeling**: Applying positive oversampling to enhance gradient signals for sparse tasks, and by replacing BCE with Focal Loss for extremely sparse behaviors to emphasize hard-sample learning. 
 
-- **Hybrid-granularity Feature Selection**: Used PLE-based offline feature importance to identify task-relevant features, and introduced a FeatureGate module to apply dimension-wise soft masking on task-specific embeddings.
+- **Optimized Private Expert**: Developing a Optimized Private Expert(OPE) model to introduce task-specific embeddings and feature-selection mechanisms to improve personalization and reduce unnecessary memory overhead.
 
-## **2. Model Architecture**
-<img src="assets/HFSOPE.png" alt="HFS-OPE" width="320" height="240" />
+- **Learning-based ensemble method**: Adopting LR/MLP as learnable weight models and incorporate ideas from **aWELv** to build user embeddings and task embeddings, using their inner product produces as user-level fusion weights.
+
+## **2. OPE Model Architecture**
+<img src="assets/OPE.png" alt="HFS-OPE" width="320" height="240" />
 
 ## **3. Requirements**
 - **numpy**
@@ -20,35 +24,49 @@ Developed an enhanced multi-task learning model based on the PLE framework to ad
 - **scikit-learn**
 
 ## **4. Getting started**
+**Training an OPE model**
 ```
 python main.py \
---task_name=census_income \
 --seed=42 \
---model_name=esmm \ #mmoe、ple、hfs_ope
---train_batch_size=1024 \
---val_batch_size=1024 \
---test_batch_size=1024 \
+--task_name=kuairand_1k \
+--model_name=ope \
+--dataset_path='' \
+--lr=0.0001 \
+--loss_fn='weighted_bce' \
 --device=cuda \
---mtl_task_num=2 \
---model_path='/share/home/u17518/yhn/application/HFS-OPE_v2/experiments/census_income_ple_seed42_best_model_2.pth' # use it when model_name = hfs_ope
---dataset_path='./data/KuaiRand/kuairand_pure_input.csv'
+--train_batch_size=4096 \
+--val_batch_size=4096 \
+--test_batch_size=4096 \
+--epochs=50 \
+--click_neg_ratio=1.0 \
+--pos_weight 1.0 10.0 20.0 40.0 40.0 1.0 \
+--task_loss_weight 1.0 0.8 0.7 0.6 0.6 1.0 \
+--task_cols is_click is_like is_comment is_follow is_forward long_view \
+--ope_num_shared_experts=2 \
+--ope_num_specific_experts=2 \
+--ope_num_levels=2 \ 
+--top_n_feature_num=5 \
+--embedding_size=64 \
+--mtl_task_num=6 \
+--ple_model_path=''
 ```
-
-
-## **5. Datasets**
-| Name | users | items | interactions | Features | link |
-|----------|----------|----------|----------|----------|----------|
-| census-income   | -  | -  | 299,285  |42|https://archive.ics.uci.edu/dataset/117/census+income+kdd|
-| Kuairand-Pure   | 27,285  | 7,583  | 1,186,059  |30(user) + 62(item)|https://kuairand.com/|
-| TenRec   | 1M  | 1,948,388  | 86,642,580  |3(user) + 2(item) + User's last 10 interactions|https://tenrec0.github.io/|
-
-Note: Kuairand-Pure only use 10(user) + 8(item) features
-
-## **6. Results**
-| Dataset | Metric | ESMM | MMOE | PLE | ours |
-|---------|--------|------|------|-----|------|
-| census-income | Task1-AUC<br>Task2-AUC | 0.986<br>0.911 | 0.979<br>0.938 | 0.982<br>0.935 | **0.995<br>0.947** |
-| Kuairand-Pure | Click-AUC<br>Like-AUC | 0.601<br>0.839 | **0.744**<br>0.834 | 0.691<br>0.795 | 0.739<br>**0.866** |
-| TenRec | Click-AUC<br>Like-AUC | 0.559<br>0.922 | -<br>- | -<br>- | **-<br>-** |
-
-(The remaining experimental results will be released soon.)
+**Scores fusion**
+```
+python main.py \
+--seed=42 \
+--is_ensemble_rank \
+--train_batch_size=4096 \
+--epochs=50 \
+--ope_num_shared_experts=2 \
+--ope_num_specific_experts=2 \
+--ope_num_levels=2 \
+--ope_model_load_path='/share/home/u17518/yhn/application/HFS_OPE_v4/experiments/kuairand_1k_ope_seed42_best_model_6.pth' \
+--top_n_feature_load_path='/share/home/u17518/yhn/application/HFS_OPE_v4/experiments/feats_importance.csv' \
+--top_n_feature_num=5 \
+--embedding_size=64 \
+--mtl_task_num=6 \
+--ensemble=awelv \
+--pxtr_load_path='/share/home/u17518/yhn/application/HFS_OPE_v4/experiments/pxtrs.csv' \
+--cal_diversity \
+--diversity_alpha=1e-6
+```
